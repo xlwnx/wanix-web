@@ -42,27 +42,36 @@ body {
 }
 
 @keyframes mesh-drift-a {
-  0%, 100% {
+
+  0%,
+  100% {
     transform: translate3d(0%, 0%, 0) scale(1);
   }
+
   50% {
     transform: translate3d(10%, 8%, 0) scale(1.12);
   }
 }
 
 @keyframes mesh-drift-b {
-  0%, 100% {
+
+  0%,
+  100% {
     transform: translate3d(0%, 0%, 0) scale(1);
   }
+
   50% {
     transform: translate3d(-12%, 6%, 0) scale(1.15);
   }
 }
 
 @keyframes mesh-drift-c {
-  0%, 100% {
+
+  0%,
+  100% {
     transform: translate3d(0%, 0%, 0) scale(1);
   }
+
   50% {
     transform: translate3d(8%, -10%, 0) scale(1.1);
   }
@@ -207,4 +216,19 @@ body {
       rgba(255, 255, 255, 0.04) 75%);
   background-size: 200% 100%;
   animation: shimmer-sweep 1.8s ease-in-out infinite;
+}
+
+.player-shell:fullscreen,
+.player-shell:-webkit-full-screen,
+.player-shell iframe:fullscreen,
+.player-shell iframe:-webkit-full-screen {
+  width: 100% !important;
+  height: 100% !important;
+  max-width: none !important;
+  max-height: none !important;
+  aspect-ratio: auto !important;
+  border-radius: 0 !important;
+  border: 0 !important;
+  box-shadow: none !important;
+  background: #000000 !important;
 }

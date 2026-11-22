@@ -39,7 +39,6 @@ export function VidriftPlayer({
   episode = 1,
 }: VidriftPlayerProps) {
   const router = useRouter();
-  const containerRef = useRef<HTMLDivElement>(null);
   const iframeRef = useRef<HTMLIFrameElement>(null);
 
   const embedUrl = useMemo(() => {
@@ -55,7 +54,6 @@ export function VidriftPlayer({
       showTitle: "1",
       exit: "1",
       download: "1",
-      fs: "parent",
     });
     if (posterUrl) params.set("poster", posterUrl);
     return `${basePath}?${params.toString()}`;
@@ -76,17 +74,6 @@ export function VidriftPlayer({
       if (typeof saved?.currentTime === "number" && saved.currentTime > 10) {
         sendToPlayer({ type: "vidrift:resume", currentTime: saved.currentTime });
       }
-      sendToPlayer({
-        type: "vidrift:fullscreen-state",
-        on: Boolean(document.fullscreenElement),
-      });
-    };
-
-    const handleFullscreenChange = () => {
-      sendToPlayer({
-        type: "vidrift:fullscreen-state",
-        on: Boolean(document.fullscreenElement),
-      });
     };
 
     const handleMessage = (e: MessageEvent) => {
@@ -115,14 +102,6 @@ export function VidriftPlayer({
           }
           break;
         }
-        case "vidrift:fullscreen": {
-          if (e.data.on) {
-            containerRef.current?.requestFullscreen?.().catch(() => {});
-          } else if (document.fullscreenElement) {
-            document.exitFullscreen?.().catch(() => {});
-          }
-          break;
-        }
       }
     };
 
@@ -131,7 +110,6 @@ export function VidriftPlayer({
       iframe.src = embedUrl;
     }
     iframe?.addEventListener("load", handleLoad);
-    document.addEventListener("fullscreenchange", handleFullscreenChange);
     window.addEventListener("message", handleMessage);
 
     return () => {
@@ -140,17 +118,13 @@ export function VidriftPlayer({
         iframe.src = "about:blank";
       }
       iframe?.removeEventListener("load", handleLoad);
-      document.removeEventListener("fullscreenchange", handleFullscreenChange);
       window.removeEventListener("message", handleMessage);
     };
   }, [tmdbId, mediaType, season, episode, router, embedUrl]);
 
   return (
     <div className="space-y-2">
-      <div
-        ref={containerRef}
-        className="relative aspect-video w-full rounded-[24px] overflow-hidden glass"
-      >
+      <div className="player-shell relative aspect-video w-full rounded-[24px] overflow-hidden glass">
         <iframe
           ref={iframeRef}
           src={embedUrl}
